@@ -6,7 +6,7 @@ const passwordRegex =
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export const registerSchema = z.object({
-    name: z.string().trim().min(3).optional(),
+    name: z.string().trim().min(3),
     email: z.string().trim().regex(emailRegex,{
         message: "Enter a valid email address"
     }),
