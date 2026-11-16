@@ -1,4 +1,4 @@
-import {createTaskByUser,getAllTasksOfUser,fetchSingleTask,updatedTask,deletedTask} from "../services/task.service.js"
+import { createTaskByUser,getAllTasksOfUser,fetchSingleTask,updatedTask,deletedTask,knowStatistics } from "../services/task.service.js"
 import ApiError from "../utils/api-error.js";
 
 const createTask = async (req,res) => {
@@ -11,14 +11,26 @@ const createTask = async (req,res) => {
     })
 }
 
-const getAllTasks = async (req,res) => {
-    const ownerId = req.user
-    const tasks = await getAllTasksOfUser(ownerId)
+const getAllTasks = async (req, res) => {
+    const ownerId = req.user;
+    const { page, limit, status, priority, sortBy, order } =
+        req.validatedQuery;
+
+    const result = await getAllTasksOfUser({
+        ownerId,
+        page,
+        limit,
+        status,
+        priority,
+        sortBy,
+        order
+    });
+
     return res.status(200).json({
-        message: "All the tasks are fetched successfully",
-        tasks
-    })
-}
+        message: "Tasks fetched successfully",
+        ...result
+    });
+};
 
 const getSingleTask = async (req,res) => {
     const taskId = req.params.id;
@@ -60,4 +72,13 @@ const deleteTask = async(req,res) => {
     })
 }
 
-export default { createTask,getAllTasks,getSingleTask,updateTask,deleteTask }
+const knowStats = async(req,res) => {
+    const owner = req.user
+    const stats = await knowStatistics(owner)
+    return res.status(200).json({
+        message: "Statistics of tasks are fetched successfully",
+        stats
+    })
+}
+
+export default { createTask,getAllTasks,getSingleTask,updateTask,deleteTask,knowStats }

@@ -30,3 +30,18 @@ export const updateTaskSchema = createTaskSchema
             message: "At least one field must be provided for updating"
         }
     );
+
+export const paginateSchema = z.object({
+    page: z.coerce.number().int().min(1).default(1),
+    limit: z.coerce.number().int().min(1).max(100).default(10),
+    status: z.enum(["PENDING", "IN_PROGRESS", "COMPLETED"]).optional(),
+    priority: z.enum(["LOW", "MEDIUM", "HIGH"]).optional(),
+    sortBy: z.enum([
+        "deadline",
+        "createdAt",
+        "title",
+        "priority",
+        "status"
+    ]).default("createdAt"),
+    order: z.enum(["asc", "desc"]).default("desc")
+});
